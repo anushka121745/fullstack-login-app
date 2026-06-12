@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
+  const [stats, setStats] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,6 +15,10 @@ function Dashboard() {
     })
     .then(res => setUser(res.data))
     .catch(() => navigate("/"));
+
+    axios.get("http://localhost:5000/api/employees/stats/dashboard")
+    .then(res => setStats(res.data))
+    .catch(err => console.log(err));
   }, []);
 
   const handleLogout = () => {
@@ -25,29 +30,44 @@ function Dashboard() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.welcome}>Welcome, {user.name}! 👋</h1>
-
-      <div style={styles.card}>
-        <h2 style={styles.title}>Your Profile</h2>
-        <p style={styles.info}><strong>Name:</strong> {user.name}</p>
-        <p style={styles.info}><strong>Email:</strong> {user.email}</p>
-        <p style={styles.info}><strong>Role:</strong> {user.role || "user"}</p>
+      <div style={styles.header}>
+        <h1>Welcome, {user.name}! 👋</h1>
+        <div>
+          <Link to="/employees" style={styles.navBtn}>Employees</Link>
+          <Link to="/create-employee" style={styles.navBtn}>Add Employee</Link>
+          <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
+        </div>
       </div>
 
-      <button onClick={handleLogout} style={styles.button}>
-        Logout
-      </button>
+      <div style={styles.cards}>
+        <div style={styles.card}>
+          <h2>{stats.employees || 0}</h2>
+          <p>Total Employees</p>
+        </div>
+        <div style={styles.card}>
+          <h2>{stats.departments || 0}</h2>
+          <p>Total Departments</p>
+        </div>
+        <div style={styles.card}>
+          <h2>{stats.skills || 0}</h2>
+          <p>Total Skills</p>
+        </div>
+        <div style={styles.card}>
+          <h2>{stats.images || 0}</h2>
+          <p>Total Images</p>
+        </div>
+      </div>
     </div>
   );
 }
 
 const styles = {
-  container: { maxWidth: "500px", margin: "60px auto", fontFamily: "Arial, sans-serif", textAlign: "center" },
-  welcome: { color: "#333" },
-  card: { padding: "30px", border: "1px solid #ddd", borderRadius: "10px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", marginBottom: "20px" },
-  title: { color: "#444", marginBottom: "20px" },
-  info: { fontSize: "16px", color: "#555", marginBottom: "10px", textAlign: "left" },
-  button: { padding: "10px 30px", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "6px", fontSize: "16px", cursor: "pointer" },
+  container: { fontFamily: "Arial, sans-serif", padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" },
+  header: { display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "white", padding: "15px 25px", borderRadius: "10px", marginBottom: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" },
+  navBtn: { padding: "8px 16px", backgroundColor: "#2196F3", color: "white", borderRadius: "6px", textDecoration: "none", marginRight: "10px" },
+  logoutBtn: { padding: "8px 16px", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" },
+  cards: { display: "flex", gap: "20px", flexWrap: "wrap" },
+  card: { backgroundColor: "white", padding: "30px", borderRadius: "10px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", flex: "1", textAlign: "center", minWidth: "150px" },
 };
 
 export default Dashboard;
