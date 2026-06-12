@@ -5,6 +5,7 @@ const cors = require("cors");
 const path = require("path");
 const authRoutes = require("./routes/auth");
 const employeeRoutes = require("./routes/employees");
+const leaveRoutes = require("./routes/leaves");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", authRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/leaves", leaveRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend is running!");
