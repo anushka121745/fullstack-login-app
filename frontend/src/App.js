@@ -9,6 +9,8 @@ import CreateEmployee from "./pages/CreateEmployee";
 import ApplyLeave from "./pages/ApplyLeave";
 import MyLeaves from "./pages/MyLeaves";
 import LeaveApproval from "./pages/LeaveApproval";
+import Assets from "./pages/Assets";
+import Reports from "./pages/Reports";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
         <Route path="/apply-leave" element={<ProtectedRoute><ApplyLeave /></ProtectedRoute>} />
         <Route path="/my-leaves" element={<ProtectedRoute><MyLeaves /></ProtectedRoute>} />
         <Route path="/leave-approval" element={<ProtectedRoute><LeaveApproval /></ProtectedRoute>} />
+        <Route path="/assets" element={<ProtectedRoute><Assets /></ProtectedRoute>} />
+        <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
