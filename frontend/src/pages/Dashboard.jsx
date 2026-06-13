@@ -22,7 +22,7 @@ function Dashboard() {
     axios.get("https://ems-backend-kdk0.onrender.com/api/assets/stats").then(res => setAssetStats(res.data));
     axios.get("https://ems-backend-kdk0.onrender.com/api/employees/department-stats").then(res => setDeptStats(res.data));
     axios.get("https://ems-backend-kdk0.onrender.com/api/employees/total-salary").then(res => setTotalSalary(res.data.total));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     localStorage.removeItem("token");
