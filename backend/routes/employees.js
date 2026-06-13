@@ -97,3 +97,31 @@ router.get("/stats/dashboard", async (req, res) => {
 });
 
 module.exports = router;
+// DEPARTMENT STATS
+router.get("/department-stats", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT d.department_name,
+        COUNT(ep.id) as employee_count,
+        COALESCE(AVG(ep.salary), 0) as avg_salary,
+        COALESCE(SUM(ep.salary), 0) as total_salary
+      FROM departments d
+      LEFT JOIN employee_profiles ep ON d.id = ep.department_id
+      GROUP BY d.department_name
+      ORDER BY employee_count DESC
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// TOTAL SALARY
+router.get("/total-salary", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT COALESCE(SUM(salary), 0) as total FROM employee_profiles");
+    res.json({ total: result.rows[0].total });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});

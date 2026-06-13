@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, Legend } from "recharts";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({});
   const [leaveStats, setLeaveStats] = useState({});
   const [assetStats, setAssetStats] = useState({});
+  const [deptStats, setDeptStats] = useState([]);
+  const [totalSalary, setTotalSalary] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,14 +17,11 @@ function Dashboard() {
       .then(res => setUser(res.data))
       .catch(() => navigate("/"));
 
-    axios.get("http://localhost:5000/api/employees/stats/dashboard")
-      .then(res => setStats(res.data));
-
-    axios.get("http://localhost:5000/api/leaves/stats")
-      .then(res => setLeaveStats(res.data));
-
-    axios.get("http://localhost:5000/api/assets/stats")
-      .then(res => setAssetStats(res.data));
+    axios.get("http://localhost:5000/api/employees/stats/dashboard").then(res => setStats(res.data));
+    axios.get("http://localhost:5000/api/leaves/stats").then(res => setLeaveStats(res.data));
+    axios.get("http://localhost:5000/api/assets/stats").then(res => setAssetStats(res.data));
+    axios.get("http://localhost:5000/api/employees/department-stats").then(res => setDeptStats(res.data));
+    axios.get("http://localhost:5000/api/employees/total-salary").then(res => setTotalSalary(res.data.total));
   }, []);
 
   const handleLogout = () => {
@@ -31,77 +29,115 @@ function Dashboard() {
     navigate("/");
   };
 
-  if (!user) return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
-
-  const leaveChartData = [
-    { name: "Pending", value: parseInt(leaveStats.pending || 0) },
-    { name: "Approved", value: parseInt(leaveStats.approved || 0) },
-    { name: "Rejected", value: parseInt(leaveStats.rejected || 0) },
-  ];
-
-  const assetChartData = [
-    { name: "Available", value: parseInt(assetStats.available || 0) },
-    { name: "Allocated", value: parseInt(assetStats.allocated || 0) },
-  ];
-
-  const COLORS = ["#FF9800", "#4CAF50", "#f44336", "#2196F3"];
+  if (!user) return <h2 style={{ textAlign: "center", marginTop: "50px" }}>Loading...</h2>;
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1>Welcome, {user.name}! 👋</h1>
-        <div style={styles.navLinks}>
-          <Link to="/employees" style={styles.navBtn}>Employees</Link>
-          <Link to="/create-employee" style={styles.navBtn}>Add Employee</Link>
-          <Link to="/apply-leave" style={styles.navBtn}>Apply Leave</Link>
-          <Link to="/my-leaves" style={styles.navBtn}>My Leaves</Link>
-          <Link to="/leave-approval" style={styles.navBtn}>Approvals</Link>
-          <Link to="/assets" style={styles.navBtn}>Assets</Link>
-          <Link to="/reports" style={styles.navBtn}>Reports</Link>
-          <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
+    <div style={styles.layout}>
+      <div style={styles.sidebar}>
+        <div style={styles.logo}>
+          <h2 style={{ color: "white", margin: 0 }}>iSoftzone</h2>
+          <p style={{ color: "#aaa", margin: 0, fontSize: "12px" }}>HRMS Platform</p>
+        </div>
+
+        <nav style={styles.nav}>
+          <Link to="/dashboard" style={styles.navItemActive}>🏠 Dashboard</Link>
+          <Link to="/employees" style={styles.navItem}>👥 Employees</Link>
+          <Link to="/apply-leave" style={styles.navItem}>📅 Leave</Link>
+          <Link to="/assets" style={styles.navItem}>💻 Assets</Link>
+          <Link to="/reports" style={styles.navItem}>📊 Reports</Link>
+          <Link to="/leave-approval" style={styles.navItem}>✅ Approvals</Link>
+          <Link to="/reporting" style={styles.navItem}>📈 Analytics</Link>
+        </nav>
+
+        <div style={styles.userBox}>
+          <div style={styles.avatar}>{user.name.charAt(0)}</div>
+          <div>
+            <p style={{ color: "white", margin: 0, fontSize: "14px" }}>{user.name}</p>
+            <p style={{ color: "#aaa", margin: 0, fontSize: "12px" }}>{user.role || "Employee"}</p>
+          </div>
+          <button onClick={handleLogout} style={styles.logoutBtn}>⏻</button>
         </div>
       </div>
 
-      <h3 style={styles.sectionTitle}>Employee Stats</h3>
-      <div style={styles.cards}>
-        <div style={styles.card}><h2>{stats.employees || 0}</h2><p>Total Employees</p></div>
-        <div style={styles.card}><h2>{stats.departments || 0}</h2><p>Departments</p></div>
-        <div style={styles.card}><h2>{stats.skills || 0}</h2><p>Skills</p></div>
-        <div style={styles.card}><h2>{assetStats.total || 0}</h2><p>Total Assets</p></div>
-      </div>
+      <div style={styles.main}>
+        <h2 style={styles.pageTitle}>Dashboard</h2>
 
-      <h3 style={styles.sectionTitle}>Leave Stats</h3>
-      <div style={styles.cards}>
-        <div style={{ ...styles.card, borderTop: "4px solid #2196F3" }}><h2>{leaveStats.total || 0}</h2><p>Total Leaves</p></div>
-        <div style={{ ...styles.card, borderTop: "4px solid orange" }}><h2>{leaveStats.pending || 0}</h2><p>Pending</p></div>
-        <div style={{ ...styles.card, borderTop: "4px solid green" }}><h2>{leaveStats.approved || 0}</h2><p>Approved</p></div>
-        <div style={{ ...styles.card, borderTop: "4px solid red" }}><h2>{leaveStats.rejected || 0}</h2><p>Rejected</p></div>
-      </div>
+        <div style={styles.cards}>
+          <div style={styles.card}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#e3f2fd" }}>👥</div>
+            <div>
+              <p style={styles.cardLabel}>TOTAL EMPLOYEES</p>
+              <h2 style={styles.cardValue}>{stats.employees || 0}</h2>
+            </div>
+          </div>
+          <div style={styles.card}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#e8f5e9" }}>🏢</div>
+            <div>
+              <p style={styles.cardLabel}>DEPARTMENTS</p>
+              <h2 style={styles.cardValue}>{stats.departments || 0}</h2>
+            </div>
+          </div>
+          <div style={styles.card}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#fff8e1" }}>⏳</div>
+            <div>
+              <p style={styles.cardLabel}>PENDING LEAVES</p>
+              <h2 style={styles.cardValue}>{leaveStats.pending || 0}</h2>
+            </div>
+          </div>
+          <div style={styles.card}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#e8f5e9" }}>✅</div>
+            <div>
+              <p style={styles.cardLabel}>APPROVED LEAVES</p>
+              <h2 style={styles.cardValue}>{leaveStats.approved || 0}</h2>
+            </div>
+          </div>
+          <div style={styles.card}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#ffebee" }}>❌</div>
+            <div>
+              <p style={styles.cardLabel}>REJECTED LEAVES</p>
+              <h2 style={styles.cardValue}>{leaveStats.rejected || 0}</h2>
+            </div>
+          </div>
+          <div style={styles.card}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#e3f2fd" }}>💻</div>
+            <div>
+              <p style={styles.cardLabel}>TOTAL ASSETS</p>
+              <h2 style={styles.cardValue}>{assetStats.total || 0}</h2>
+            </div>
+          </div>
+          <div style={{ ...styles.card, gridColumn: "span 2" }}>
+            <div style={{ ...styles.cardIcon, backgroundColor: "#fff8e1" }}>💰</div>
+            <div>
+              <p style={styles.cardLabel}>TOTAL SALARY EXPENSE</p>
+              <h2 style={{ ...styles.cardValue, color: "#f57c00" }}>₹{Number(totalSalary).toLocaleString("en-IN")}</h2>
+            </div>
+          </div>
+        </div>
 
-      <h3 style={styles.sectionTitle}>Charts</h3>
-      <div style={styles.charts}>
-        <div style={styles.chartBox}>
-          <h4>Leave Status</h4>
-          <PieChart width={300} height={250}>
-            <Pie data={leaveChartData} cx={150} cy={100} outerRadius={80} dataKey="value" label>
-              {leaveChartData.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index]} />
+        <div style={styles.tableBox}>
+          <h3 style={styles.tableTitle}>🏢 Department Statistics</h3>
+          <table style={styles.table}>
+            <thead>
+              <tr style={styles.thead}>
+                <th style={styles.th}>DEPARTMENT</th>
+                <th style={styles.th}>EMPLOYEES</th>
+                <th style={styles.th}>AVG SALARY</th>
+                <th style={styles.th}>TOTAL SALARY</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deptStats.map((dept, index) => (
+                <tr key={index} style={styles.tr}>
+                  <td style={styles.td}>
+                    <span style={styles.deptBadge}>{dept.department_name}</span>
+                  </td>
+                  <td style={styles.td}>{dept.employee_count}</td>
+                  <td style={styles.td}>₹{Number(dept.avg_salary).toLocaleString("en-IN")}</td>
+                  <td style={styles.td}>₹{Number(dept.total_salary).toLocaleString("en-IN")}</td>
+                </tr>
               ))}
-            </Pie>
-            <Legend />
-            <Tooltip />
-          </PieChart>
-        </div>
-
-        <div style={styles.chartBox}>
-          <h4>Asset Status</h4>
-          <BarChart width={300} height={250} data={assetChartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="value" fill="#2196F3" />
-          </BarChart>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -109,16 +145,30 @@ function Dashboard() {
 }
 
 const styles = {
-  container: { fontFamily: "Arial, sans-serif", padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" },
-  header: { display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "white", padding: "15px 25px", borderRadius: "10px", marginBottom: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", flexWrap: "wrap", gap: "10px" },
-  navLinks: { display: "flex", flexWrap: "wrap", gap: "8px" },
-  navBtn: { padding: "8px 16px", backgroundColor: "#2196F3", color: "white", borderRadius: "6px", textDecoration: "none" },
-  logoutBtn: { padding: "8px 16px", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" },
-  sectionTitle: { color: "#444", marginBottom: "15px", marginTop: "20px" },
-  cards: { display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "20px" },
-  card: { backgroundColor: "white", padding: "30px", borderRadius: "10px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", flex: "1", textAlign: "center", minWidth: "150px" },
-  charts: { display: "flex", gap: "20px", flexWrap: "wrap" },
-  chartBox: { backgroundColor: "white", padding: "20px", borderRadius: "10px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" },
+  layout: { display: "flex", minHeight: "100vh", fontFamily: "Arial, sans-serif" },
+  sidebar: { width: "220px", backgroundColor: "#1a1f36", display: "flex", flexDirection: "column", padding: "20px", position: "fixed", height: "100vh", left: 0, top: 0, overflowY: "auto" },
+  logo: { marginBottom: "30px", paddingBottom: "20px", borderBottom: "1px solid #333" },
+  nav: { display: "flex", flexDirection: "column", gap: "5px", flex: 1 },
+  navItem: { padding: "12px 15px", color: "#aaa", textDecoration: "none", borderRadius: "8px", fontSize: "14px" },
+  navItemActive: { padding: "12px 15px", color: "white", textDecoration: "none", borderRadius: "8px", fontSize: "14px", backgroundColor: "#2196F3" },
+  userBox: { display: "flex", alignItems: "center", gap: "10px", paddingTop: "20px", borderTop: "1px solid #333" },
+  avatar: { width: "35px", height: "35px", borderRadius: "50%", backgroundColor: "#2196F3", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" },
+  logoutBtn: { marginLeft: "auto", background: "none", border: "none", color: "#aaa", fontSize: "18px", cursor: "pointer" },
+  main: { marginLeft: "220px", padding: "30px", flex: 1, backgroundColor: "#f5f6fa", minHeight: "100vh", overflowY: "auto" },
+  pageTitle: { color: "#333", marginBottom: "20px" },
+  cards: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "30px" },
+  card: { backgroundColor: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "15px" },
+  cardIcon: { width: "50px", height: "50px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" },
+  cardLabel: { color: "#999", fontSize: "11px", margin: 0, fontWeight: "bold" },
+  cardValue: { color: "#333", margin: 0, fontSize: "28px" },
+  tableBox: { backgroundColor: "white", borderRadius: "12px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" },
+  tableTitle: { color: "#333", marginBottom: "15px" },
+  table: { width: "100%", borderCollapse: "collapse" },
+  thead: { backgroundColor: "#f5f6fa" },
+  th: { padding: "12px", textAlign: "left", color: "#999", fontSize: "12px", fontWeight: "bold" },
+  tr: { borderBottom: "1px solid #f5f6fa" },
+  td: { padding: "12px", color: "#333", fontSize: "14px" },
+  deptBadge: { backgroundColor: "#e3f2fd", color: "#1976d2", padding: "4px 10px", borderRadius: "20px", fontSize: "13px" },
 };
 
 export default Dashboard;
