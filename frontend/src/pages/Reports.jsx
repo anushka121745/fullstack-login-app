@@ -9,8 +9,8 @@ function Reports() {
   const [activeTab, setActiveTab] = useState("employees");
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/employees").then(res => setEmployees(res.data));
-    axios.get("http://localhost:5000/api/leaves/all").then(res => setLeaves(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees").then(res => setEmployees(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/leaves/all").then(res => setLeaves(res.data));
   }, []);
 
   const exportToExcel = (data, filename) => {

@@ -12,7 +12,7 @@ function ResetPassword() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/reset-password",
+        "https://ems-backend-kdk0.onrender.com/api/auth/reset-password",
         { token, password }
       );
       setMessage(res.data.message);

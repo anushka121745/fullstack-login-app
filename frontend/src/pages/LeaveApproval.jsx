@@ -7,7 +7,7 @@ function LeaveApproval() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/leaves/all")
+    axios.get("https://ems-backend-kdk0.onrender.com/api/leaves/all")
     .then(res => setLeaves(res.data))
     .catch(err => console.log(err));
   }, []);
@@ -18,7 +18,7 @@ function LeaveApproval() {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       const approved_by = decoded.id;
 
-      await axios.put(`http://localhost:5000/api/leaves/action/${id}`, {
+      await axios.put(`https://ems-backend-kdk0.onrender.com/api/leaves/action/${id}`, {
         action, remarks: action, approved_by
       });
 

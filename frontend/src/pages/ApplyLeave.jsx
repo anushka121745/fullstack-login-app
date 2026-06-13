@@ -9,7 +9,7 @@ function ApplyLeave() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/leaves/types")
+    axios.get("https://ems-backend-kdk0.onrender.com/api/leaves/types")
     .then(res => setLeaveTypes(res.data))
     .catch(err => console.log(err));
   }, []);
@@ -25,7 +25,7 @@ function ApplyLeave() {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       const employee_id = decoded.id;
 
-      await axios.post("http://localhost:5000/api/leaves/apply", {
+      await axios.post("https://ems-backend-kdk0.onrender.com/api/leaves/apply", {
         ...form, employee_id
       });
 

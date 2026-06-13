@@ -10,7 +10,7 @@ function MyLeaves() {
     const decoded = JSON.parse(atob(token.split(".")[1]));
     const employee_id = decoded.id;
 
-    axios.get(`http://localhost:5000/api/leaves/my/${employee_id}`)
+    axios.get(`https://ems-backend-kdk0.onrender.com/api/leaves/my/${employee_id}`)
     .then(res => setLeaves(res.data))
     .catch(err => console.log(err));
   }, []);

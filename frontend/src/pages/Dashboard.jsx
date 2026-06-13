@@ -13,15 +13,15 @@ function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios.get("http://localhost:5000/api/user/profile", { headers: { Authorization: token } })
+    axios.get("https://ems-backend-kdk0.onrender.com/api/user/profile", { headers: { Authorization: token } })
       .then(res => setUser(res.data))
       .catch(() => navigate("/"));
 
-    axios.get("http://localhost:5000/api/employees/stats/dashboard").then(res => setStats(res.data));
-    axios.get("http://localhost:5000/api/leaves/stats").then(res => setLeaveStats(res.data));
-    axios.get("http://localhost:5000/api/assets/stats").then(res => setAssetStats(res.data));
-    axios.get("http://localhost:5000/api/employees/department-stats").then(res => setDeptStats(res.data));
-    axios.get("http://localhost:5000/api/employees/total-salary").then(res => setTotalSalary(res.data.total));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees/stats/dashboard").then(res => setStats(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/leaves/stats").then(res => setLeaveStats(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/assets/stats").then(res => setAssetStats(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees/department-stats").then(res => setDeptStats(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees/total-salary").then(res => setTotalSalary(res.data.total));
   }, []);
 
   const handleLogout = () => {

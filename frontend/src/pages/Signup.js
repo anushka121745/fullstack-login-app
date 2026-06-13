@@ -14,7 +14,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/signup", form);
+      const res = await axios.post("https://ems-backend-kdk0.onrender.com/api/auth/signup", form);
       alert(res.data.message);
       navigate("/");
     } catch (error) {

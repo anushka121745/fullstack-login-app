@@ -12,8 +12,8 @@ function CreateEmployee() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/employees/departments").then(res => setDepartments(res.data));
-    axios.get("http://localhost:5000/api/employees/skills").then(res => setSkills(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees/departments").then(res => setDepartments(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees/skills").then(res => setSkills(res.data));
   }, []);
 
   const handleChange = (e) => {
@@ -33,7 +33,7 @@ function CreateEmployee() {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       const user_id = decoded.id;
 
-      const res = await axios.post("http://localhost:5000/api/employees", {
+      const res = await axios.post("https://ems-backend-kdk0.onrender.com/api/employees", {
         ...form, user_id, skills: selectedSkills
       });
 
@@ -42,7 +42,7 @@ function CreateEmployee() {
       if (images.length > 0) {
         const formData = new FormData();
         for (let img of images) formData.append("images", img);
-        await axios.post(`http://localhost:5000/api/employees/upload/${empId}`, formData);
+        await axios.post(`https://ems-backend-kdk0.onrender.com/api/employees/upload/${empId}`, formData);
       }
 
       setMessage("Employee created successfully!");

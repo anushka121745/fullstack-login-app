@@ -7,14 +7,14 @@ function EmployeeList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/employees")
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees")
     .then(res => setEmployees(res.data))
     .catch(err => console.log(err));
   }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Delete this employee?")) {
-      await axios.delete(`http://localhost:5000/api/employees/${id}`);
+      await axios.delete(`https://ems-backend-kdk0.onrender.com/api/employees/${id}`);
       setEmployees(employees.filter(e => e.id !== id));
     }
   };

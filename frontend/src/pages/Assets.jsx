@@ -17,15 +17,15 @@ function Assets() {
   }, []);
 
   const fetchAssets = () => {
-    axios.get("http://localhost:5000/api/assets").then(res => setAssets(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/assets").then(res => setAssets(res.data));
   };
 
   const fetchAllocations = () => {
-    axios.get("http://localhost:5000/api/assets/allocations").then(res => setAllocations(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/assets/allocations").then(res => setAllocations(res.data));
   };
 
   const fetchUsers = () => {
-    axios.get("http://localhost:5000/api/employees").then(res => setUsers(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/employees").then(res => setUsers(res.data));
   };
 
   const handleChange = (e) => {
@@ -35,7 +35,7 @@ function Assets() {
   const handleAddAsset = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/assets", form);
+      await axios.post("https://ems-backend-kdk0.onrender.com/api/assets", form);
       setMessage("Asset added successfully!");
       fetchAssets();
       setForm({ asset_code: "", asset_name: "", asset_type: "", purchase_date: "", purchase_cost: "" });
@@ -48,7 +48,7 @@ function Assets() {
     try {
       const token = localStorage.getItem("token");
       const decoded = JSON.parse(atob(token.split(".")[1]));
-      await axios.post("http://localhost:5000/api/assets/allocate", {
+      await axios.post("https://ems-backend-kdk0.onrender.com/api/assets/allocate", {
         asset_id, employee_id, allocated_by: decoded.id
       });
       setMessage("Asset allocated successfully!");
@@ -63,7 +63,7 @@ function Assets() {
     try {
       const token = localStorage.getItem("token");
       const decoded = JSON.parse(atob(token.split(".")[1]));
-      await axios.put(`http://localhost:5000/api/assets/return/${id}`, {
+      await axios.put(`https://ems-backend-kdk0.onrender.com/api/assets/return/${id}`, {
         asset_id, returned_by: decoded.id
       });
       setMessage("Asset returned successfully!");

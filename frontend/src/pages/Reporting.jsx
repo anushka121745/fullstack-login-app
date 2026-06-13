@@ -14,10 +14,10 @@ function Reporting() {
   const COLORS = ["#2196F3", "#4CAF50", "#FF9800", "#f44336", "#9C27B0", "#00BCD4"];
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/reporting/citywise").then(res => setCityData(res.data));
-    axios.get("http://localhost:5000/api/reporting/domainwise").then(res => setDomainData(res.data));
-    axios.get("http://localhost:5000/api/reporting/meetingmode").then(res => setMeetingData(res.data));
-    axios.get("http://localhost:5000/api/reporting/salary-all").then(res => setSalaryData(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/reporting/citywise").then(res => setCityData(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/reporting/domainwise").then(res => setDomainData(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/reporting/meetingmode").then(res => setMeetingData(res.data));
+    axios.get("https://ems-backend-kdk0.onrender.com/api/reporting/salary-all").then(res => setSalaryData(res.data));
   }, []);
 
   const exportToExcel = (data, filename) => {
